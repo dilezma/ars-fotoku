@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FotoStorage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #333 0%, #111 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .admin-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .btn-admin {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        /* Admin Stats */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .admin-stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .admin-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .admin-stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .stat-1 .admin-stat-icon {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        }
+        
+        .stat-2 .admin-stat-icon {
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+        }
+        
+        .stat-3 .admin-stat-icon {
+            background: linear-gradient(135deg, #4cc9f0 0%, #2ec4b6 100%);
+        }
+        
+        .stat-4 .admin-stat-icon {
+            background: linear-gradient(135deg, #ff9f1c 0%, #ff5400 100%);
+        }
+        
+        .admin-stat-info h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .admin-stat-info p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Admin Actions */
+        .admin-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        /* Users Table */
+        .users-table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 50px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.3s ease;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        td {
+            padding: 20px;
+            color: #495057;
+        }
+        
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .user-info h4 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-info small {
+            color: #6c757d;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-delete-user {
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+            color: white;
+        }
+        
+        .btn-delete-user:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(247, 37, 133, 0.3);
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.3);
+            border-radius: 50%;
+            border-top-color: #4361ee;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+        
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-header h2 {
+            color: #333;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: #f72585;
+        }
+        
+        /* Confirm Delete Modal */
+        .confirm-modal-content {
+            text-align: center;
+        }
+        
+        .confirm-icon {
+            font-size: 4rem;
+            color: #f72585;
+            margin-bottom: 20px;
+        }
+        
+        .confirm-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-cancel, .btn-confirm {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .btn-cancel:hover {
+            background: #dee2e6;
+        }
+        
+        .btn-confirm {
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+            color: white;
+        }
+        
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(247, 37, 133, 0.3);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1001;
+            animation: slideInRight 0.3s ease-out;
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast-success {
+            border-left: 5px solid #2ec4b6;
+        }
+        
+        .toast-error {
+            border-left: 5px solid #f72585;
+        }
+        
+        .toast-info {
+            border-left: 5px solid #4361ee;
+        }
+        
+        .toast i {
+            font-size: 1.5rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 15px 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .admin-stat-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .user-cell {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .toast {
+                left: 20px;
+                right: 20px;
+                bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+            </div>
+            <div class="admin-controls">
+                <button class="btn-admin" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+                <button class="btn-logout" onclick="window.location.href='login.html'">
+                    <i class="fas fa-sign-out-alt"></i> Keluar Admin
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Admin Stats -->
+        <div class="admin-stats">
+            <div class="admin-stat-card stat-1">
+                <div class="admin-stat-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <h3 id="totalAllPhotos">0</h3>
+                    <p>Total Semua Foto</p>
+                </div>
+            </div>
+            <div class="admin-stat-card stat-2">
+                <div class="admin-stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <h3 id="totalDeletedPhotos">0</h3>
+                    <p>Total Foto Dihapus</p>
+                </div>
+            </div>
+            <div class="admin-stat-card stat-3">
+                <div class="admin-stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <h3 id="totalUsers">0</h3>
+                    <p>Total User Terdaftar</p>
+                </div>
+            </div>
+            <div class="admin-stat-card stat-4">
+                <div class="admin-stat-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <h3 id="totalStorage">0 MB</h3>
+                    <p>Storage Digunakan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Actions -->
+        <div class="admin-actions">
+            <h2 style="color: #333;">Manajemen Pengguna</h2>
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchUserInput" placeholder="Cari user...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="users-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="50">NO</th>
+                        <th>USERNAME</th>
+                        <th width="150">TOTAL FOTO</th>
+                        <th width="200">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr>
+                        <td colspan="4" class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Memuat data pengguna...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content confirm-modal-content">
+            <div class="modal-header">
+                <h2>Konfirmasi Hapus User</h2>
+                <button class="close-modal" id="closeConfirmModal">&times;</button>
+            </div>
+            <div class="confirm-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>Hapus User: <span id="deleteUserName"></span></h3>
+            <p style="color: #f72585; margin: 20px 0;">
+                <i class="fas fa-exclamation-circle"></i> PERINGATAN: Semua foto user ini juga akan dihapus!
+            </p>
+            <p>Apakah Anda yakin ingin menghapus user ini?</p>
+            <div class="confirm-buttons">
+                <button class="btn-cancel" id="cancelDeleteBtn">Batal</button>
+                <button class="btn-confirm" id="confirmDeleteBtn">Hapus User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAprF9h1_W4Hobne3zlT9sV_A4vOSj7QRA",
+            authDomain: "fotog-7025d.firebaseapp.com",
+            projectId: "fotog-7025d",
+            storageBucket: "fotog-7025d.firebasestorage.app",
+            messagingSenderId: "373976623342",
+            appId: "1:373976623342:web:c03783d55e6cdc3e33abff",
+            measurementId: "G-KJ65RDZ92R"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Global Variables
+        let allUsers = [];
+        let userToDelete = null;
+        
+        // DOM Elements
+        const totalAllPhotosElement = document.getElementById('totalAllPhotos');
+        const totalDeletedPhotosElement = document.getElementById('totalDeletedPhotos');
+        const totalUsersElement = document.getElementById('totalUsers');
+        const totalStorageElement = document.getElementById('totalStorage');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const searchUserInput = document.getElementById('searchUserInput');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const confirmModal = document.getElementById('confirmModal');
+        const closeConfirmModal = document.getElementById('closeConfirmModal');
+        const deleteUserNameElement = document.getElementById('deleteUserName');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const toast = document.getElementById('toast');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminStats();
+            loadUsers();
+            setupEventListeners();
+        });
+        
+        // Load Admin Stats
+        async function loadAdminStats() {
+            try {
+                // Get all users
+                const usersSnapshot = await db.collection('users').get();
+                const users = [];
+                usersSnapshot.forEach(doc => users.push(doc.data()));
+                
+                // Get all photos
+                const photosSnapshot = await db.collection('photos').get();
+                const allPhotos = [];
+                const activePhotos = [];
+                const deletedPhotos = [];
+                let totalStorageUsed = 0;
+                
+                photosSnapshot.forEach(doc => {
+                    const photo = doc.data();
+                    allPhotos.push(photo);
+                    totalStorageUsed += photo.size || 0;
+                    
+                    if (photo.deleted) {
+                        deletedPhotos.push(photo);
+                    } else {
+                        activePhotos.push(photo);
+                    }
+                });
+                
+                // Update stats
+                totalAllPhotosElement.textContent = allPhotos.length;
+                totalDeletedPhotosElement.textContent = deletedPhotos.length;
+                totalUsersElement.textContent = users.length;
+                totalStorageElement.textContent = formatStorage(totalStorageUsed);
+                
+            } catch (error) {
+                console.error('Error loading admin stats:', error);
+                showToast('Gagal memuat statistik admin', 'error');
+            }
+        }
+        
+        // Load Users
+        async function loadUsers() {
+            usersTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Memuat data pengguna...</p>
+                    </td>
+                </tr>
+            `;
+            
+            try {
+                // Get all users
+                const usersSnapshot = await db.collection('users').get();
+                allUsers = [];
+                usersSnapshot.forEach(doc => {
+                    allUsers.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                // For each user, count their active photos
+                const usersWithPhotoCount = await Promise.all(allUsers.map(async (user) => {
+                    const photosSnapshot = await db.collection('photos')
+                        .where('uid', '==', user.id)
+                        .where('deleted', '==', false)
+                        .get();
+                    
+                    return {
+                        ...user,
+                        activePhotosCount: photosSnapshot.size
+                    };
+                }));
+                
+                renderUsersTable(usersWithPhotoCount);
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showToast('Gagal memuat data pengguna', 'error');
+                usersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Gagal memuat data pengguna</p>
+                            <button class="btn-admin" onclick="loadUsers()" style="margin-top: 20px;">
+                                <i class="fas fa-redo"></i> Coba Lagi
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // Render Users Table
+        function renderUsersTable(users) {
+            if (users.length === 0) {
+                usersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <i class="fas fa-users-slash"></i>
+                            <p>Belum ada user terdaftar</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            usersTableBody.innerHTML = '';
+            
+            users.forEach((user, index) => {
+                const createdAt = user.createdAt?.toDate();
+                const formattedDate = createdAt ? createdAt.toLocaleDateString('id-ID') : 'N/A';
+                
+                // Get first letter for avatar
+                const firstLetter = user.displayName 
+                    ? user.displayName.charAt(0).toUpperCase()
+                    : user.email.charAt(0).toUpperCase();
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar">${firstLetter}</div>
+                            <div class="user-info">
+                                <h4>${user.displayName || user.email.split('@')[0]}</h4>
+                                <small>${user.email}</small>
+                                <br>
+                                <small style="color: #999;">Bergabung: ${formattedDate}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>${user.activePhotosCount || 0}</strong> foto
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-delete-user" data-user-id="${user.id}" data-user-name="${user.displayName || user.email}">
+                                <i class="fas fa-user-slash"></i> Hapus User
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                usersTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.btn-delete-user').forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.dataset.userId;
+                    const userName = this.dataset.userName;
+                    confirmDeleteUser(userId, userName);
+                });
+            });
+        }
+        
+        // Confirm Delete User
+        function confirmDeleteUser(userId, userName) {
+            userToDelete = userId;
+            deleteUserNameElement.textContent = userName;
+            confirmModal.style.display = 'block';
+        }
+        
+        // Delete User
+        async function deleteUser() {
+            if (!userToDelete) return;
+            
+            try {
+                // First, get all user's photos to delete from storage
+                const photosSnapshot = await db.collection('photos')
+                    .where('uid', '==', userToDelete)
+                    .get();
+                
+                // Delete user's photos from Firestore (storage deletion would require admin SDK)
+                const deletePromises = photosSnapshot.docs.map(doc => doc.ref.delete());
+                await Promise.all(deletePromises);
+                
+                // Delete user document
+                await db.collection('users').doc(userToDelete).delete();
+                
+                // Delete user from Firebase Auth (this would require admin SDK on server side)
+                // For client-side, we can only delete from Firestore
+                
+                // Close modal
+                confirmModal.style.display = 'none';
+                
+                // Show success message
+                showToast('User berhasil dihapus', 'success');
+                
+                // Reload data
+                loadAdminStats();
+                loadUsers();
+                
+                userToDelete = null;
+                
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showToast('Gagal menghapus user', 'error');
+            }
+        }
+        
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Refresh button
+            refreshBtn.addEventListener('click', () => {
+                loadAdminStats();
+                loadUsers();
+                showToast('Data diperbarui', 'info');
+            });
+            
+            // Search input
+            searchUserInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                if (!searchTerm) {
+                    loadUsers();
+                    return;
+                }
+                
+                const filteredUsers = allUsers.filter(user => 
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    (user.displayName && user.displayName.toLowerCase().includes(searchTerm))
+                );
+                
+                renderUsersTable(filteredUsers.map(user => ({
+                    ...user,
+                    activePhotosCount: user.activePhotosCount || 0
+                })));
+            });
+            
+            // Confirm modal
+            closeConfirmModal.addEventListener('click', () => {
+                confirmModal.style.display = 'none';
+                userToDelete = null;
+            });
+            
+            cancelDeleteBtn.addEventListener('click', () => {
+                confirmModal.style.display = 'none';
+                userToDelete = null;
+            });
+            
+            confirmDeleteBtn.addEventListener('click', deleteUser);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    confirmModal.style.display = 'none';
+                    userToDelete = null;
+                }
+            });
+        }
+        
+        // Format Storage Size
+        function formatStorage(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        // Show Toast Notification
+        function showToast(message, type = 'info') {
+            // Set toast content and style
+            toast.textContent = message;
+            toast.className = `toast toast-${type}`;
+            
+            // Set icon based on type
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'error') icon = 'exclamation-circle';
+            
+            toast.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Note: In a real application, user deletion from Firebase Auth
+        // requires Firebase Admin SDK on the server side.
+        // This implementation only deletes user data from Firestore.
+        // For production, you would need to create a Cloud Function
+        // or use a backend server to handle user deletion from Auth.
+    </script>
+</body>
+</html>
